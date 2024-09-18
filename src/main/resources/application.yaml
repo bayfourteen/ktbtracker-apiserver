@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: King Tiger Black Belt Tracking Service
+
+  cloud:
+    config:
+      enabled: false
+
+  datasource:
+    url: jdbc:postgresql://${database.host}:${database.port}/${database.name}
+    username: ${database.user}
+    password: ${database.password}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          audiences: ${google.project.id}
+          issuer-uri: https://securetoken.google.com/${google.project.id}
+          jwk-set-uri: https://www.googleapis.com/service_accounts/v1/jwk/securetoken%40system.gserviceaccount.com
+
+logging:
+  level:
+    root: info
+
+# Google Firebase Authentication Configuration...
+firebase:
+  idtoolkit-url: https://identitytoolkit.googleapis.com
+  api-key: ${google.api.key}
+  auth-domain: ${google.project.id}.firebaseapp.com
+  project-id: ${google.project.id}
+  storage-bucket: ${google.project.id}.appspot.com
+  messaging-sender-id: ${google.sender.id}
+  app-id: ${google.app.id}
+  measurement-id: G-${google.measurement.id}

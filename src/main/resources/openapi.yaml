@@ -1,0 +1,2053 @@
+openapi: 3.0.3
+info:
+  title: King Tiger Black Belt Tracking Service
+  description: King Tiger Black Belt Tracking Service
+  version: 1.0.0
+  contact:
+    name: Affiance Solutions, LLC
+    email: support@affiancesolutions.com
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  #
+  # UserAccounts (Google Firebase)
+  #
+  /api/v1/auth/changeEmail:
+    post:
+      tags:
+        - UserAccounts
+      operationId: changeEmail
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeEmailRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRecordResponse'
+      security:
+        - firebase:
+            - openid
+            - "https://www.googleapis.com/auth/userinfo.email"
+            - "https://www.googleapis.com/auth/userinfo.profile"
+  /api/v1/auth/changePassword:
+    post:
+      tags:
+        - UserAccounts
+      operationId: changePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRecordResponse'
+  /api/v1/auth/getAccountInfo:
+    get:
+      tags:
+        - UserAccounts
+      operationId: getAccountInfoSelf
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailsResponse'
+    post:
+      tags:
+        - UserAccounts
+      operationId: getAccountInfo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDetailsRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetailsResponse'
+
+  /api/v1/auth/setCustomClaims:
+    put:
+      tags:
+        - UserAccounts
+      operationId: setCustomClaims
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDetailsRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRecordResponse'
+  /api/v1/auth/signInAnonymous:
+    post:
+      tags:
+        - UserAccounts
+      operationId: signInAnonymous
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInAnonymousRequest'
+        required: true
+      responses:
+        "200":
+          description: User successfully signed anonymously
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInResponse'
+  /api/v1/auth/signInWithPassword:
+    post:
+      tags:
+        - UserAccounts
+      operationId: signInWithPassword
+      description: description
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInPasswordRequest'
+        required: true
+      responses:
+        "200":
+          description: User successfully signed in with email and password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInResponse'
+  /api/v1/auth/signUpNewUser:
+    post:
+      tags:
+        - UserAccounts
+      operationId: signUpNewUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInPasswordRequest'
+        required: true
+      responses:
+        "200":
+          description: User successfully signed up with email and password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignInResponse'
+  /api/v1/auth/updateProfile:
+    post:
+      tags:
+        - UserAccounts
+      operationId: updateProfile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRecordResponse'
+  #
+  # Candidates
+  #
+  /api/v1/candidates:
+    get:
+      tags:
+        - Candidates
+      operationId: listCandidates
+      parameters:
+        - name: cycle
+          description: "Optional. "
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: canid
+          description: "Optional. "
+          in: query
+          required: false
+          schema:
+            type: integer
+      x-spring-paginated: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidatesPageResponse'
+    post:
+      tags:
+        - Candidates
+      operationId: createCandidate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+  /api/v1/candidates/me:
+    get:
+      tags:
+        - Candidates
+      operationId: listCandidatesSelf
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Candidate'
+  /api/v1/candidates/{candidateId}:
+    get:
+      tags:
+        - Candidates
+      operationId: getCandidate
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+    put:
+      tags:
+        - Candidates
+      operationId: updateCandidate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+        required: true
+      responses:
+        "200":
+          description: Candidate was successfully updated (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+    delete:
+      tags:
+        - Candidates
+      operationId: deleteCandidate
+      responses:
+        "204":
+          description: Candidate successfully deleted (No Content)
+    parameters:
+      - $ref: '#/components/parameters/candidateId'
+
+  /api/v1/candidates/{candidateId}/statistics:
+    get:
+      tags:
+        - Statistics
+      operationId: getCandidateStatistics
+      parameters:
+        - name: trackingDate
+          description: Optional. May be specified as a single date or a comma separated date range.
+          in: query
+          schema:
+            type: array
+            items:
+              format: date
+              type: string
+            minItems: 1
+            maxItems: 2
+          required: false
+        - name: week
+          in: query
+          schema:
+            type: integer
+          required: false
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistics'
+    parameters:
+      - $ref: '#/components/parameters/candidateId'
+
+  /api/v1/candidates/{candidateId}/full-statistics:
+    get:
+      tags:
+        - Statistics
+      operationId: getCandidateFullStatistics
+      parameters:
+        - name: scope
+          description: "Limit the scope of statistics returned"
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - all
+              - physical
+              - classes
+              - other
+            default: all
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullStatistics'
+    parameters:
+      - $ref: '#/components/parameters/candidateId'
+
+  /api/v1/candidates/{candidateId}/tracking:
+    get:
+      tags:
+        - Tracking
+      operationId: listCandidateTracking
+      description: "Retrieve the tracking data for the specified candidate from the requested date range (or the current date)"
+      parameters:
+        - name: filter
+          in: query
+          style: form
+          explode: true
+          schema:
+            type: object
+            properties:
+              trackingDate:
+                type: array
+                items:
+                  format: date
+                  type: string
+                minItems: 1
+                maxItems: 2
+              full:
+                type: boolean
+                default: true
+            minProperties: 1
+            maxProperties: 1
+            additionalProperties: false
+      responses:
+        "200":
+          description: Returns candidate tracking data for specified date range (or for the current date)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tracking'
+    parameters:
+      - $ref: '#/components/parameters/candidateId'
+
+  /api/v1/candidates/{candidateId}/tracking/{trackingDate}:
+    get:
+      tags:
+        - Tracking
+      operationId: getCandidateTracking
+      responses:
+        "200":
+          description: Returns candidate tracking data for specified tracking date (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tracking'
+    put:
+      tags:
+        - Candidates
+      operationId: updateCandidateTracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackingRequest'
+        required: true
+      responses:
+        "200":
+          description: Candidate tracking data for the specified tracking date was successfully updated (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tracking'
+    parameters:
+      - $ref: '#/components/parameters/candidateId'
+      - name: trackingDate
+        in: path
+        required: true
+        schema:
+          format: date
+          type: string
+  #
+  # Cycles
+  #
+  /api/v1/cycles:
+    get:
+      tags:
+        - Cycles
+      operationId: listCycles
+      x-spring-paginated: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CyclesPageResponse'
+      security:
+        - firebase: []
+    post:
+      tags:
+        - Cycles
+      operationId: createCycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cycle'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cycle'
+  /api/v1/cycles/{cycleId}:
+    get:
+      tags:
+        - Cycles
+      operationId: getCycle
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cycle'
+    put:
+      tags:
+        - Cycles
+      operationId: updateCycle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cycle'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cycle'
+    delete:
+      tags:
+        - Cycles
+      operationId: deleteCycle
+      responses:
+        "204":
+          description: No Content
+    parameters:
+      - $ref: '#/components/parameters/cycleId'
+
+  /api/v1/cycles/{cycleId}/candidates:
+    get:
+      tags:
+        - Cycles
+      operationId: listCycleCandidates
+      x-spring-paginated: true
+      responses:
+        "200":
+          description: Lists candidates for the given cycle (OK)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandidatesPageResponse'
+    post:
+      tags:
+        - Cycles
+      operationId: addCycleCandidate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Candidate'
+        required: true
+      responses:
+        "201":
+          description: Cycle candidate was successfully added (Created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+    parameters:
+      - $ref: '#/components/parameters/cycleId'
+
+  /api/v1/cycles/{cycleId}/candidates/me:
+    get:
+      tags:
+        - Cycles
+      operationId: getAllCycleCandidatesSelf
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/Candidate'
+    parameters:
+      - $ref: '#/components/parameters/cycleId'
+
+  /api/v1/cycles/{cycleId}/candidates/{candidateId}:
+    get:
+      tags:
+        - Cycles
+      operationId: getCycleCandidate
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candidate'
+    delete:
+      tags:
+        - Cycles
+      operationId: removeCycleCandidate
+      responses:
+        "204":
+          description: Cycle candidate was successfully removed (No Content)
+        "404":
+          description: Cycle candidate was not found (Not Found)
+
+    parameters:
+      - $ref: '#/components/parameters/cycleId'
+      - $ref: '#/components/parameters/candidateId'
+
+  /api/v1/cycles/{cycleId}/full-statistics:
+    get:
+      tags:
+        - Statistics
+      operationId: listCycleCandidatesFullStatistics
+      parameters:
+        - name: scope
+          in: query
+          schema:
+            type: string
+            enum:
+              - all
+              - physical
+              - classes
+              - other
+            default: all
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullStatisticsCandidatesResponse'
+    parameters:
+      - $ref: '#/components/parameters/cycleId'
+
+  /api/v1/hello:
+    get:
+      tags:
+        - Testing
+      operationId: hello
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/v1/logs:
+    post:
+      tags:
+        - Logging
+      operationId: createLog
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogRecord'
+        required: true
+      responses:
+        "200":
+          description: OK
+  #
+  # Tracking
+  #
+  /api/v1/tracking:
+    get:
+      tags:
+        - Tracking
+      operationId: getAllTracking
+      parameters:
+        - name: can_id
+          in: query
+          schema:
+            default: "0"
+            type: integer
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+        - Tracking
+      operationId: createTracking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackingRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/v1/tracking/{candidateId}:
+    get:
+      tags:
+        - Tracking
+      operationId: getTracking
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: from_date
+          in: query
+          schema:
+            type: string
+        - name: to_date
+          in: query
+          schema:
+            type: string
+        - name: week
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistics'
+  /api/v1/tracking/{candidateId}/{trackingDate}:
+    get:
+      tags:
+        - Tracking
+      operationId: getTrackingCandidate
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: trackingDate
+          in: path
+          required: true
+          schema:
+            format: date
+            type: string
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+        - Tracking
+      operationId: updateTrackingCandidate
+      parameters:
+        - name: candidateId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: trackingDate
+          in: path
+          required: true
+          schema:
+            format: date
+            type: string
+      responses:
+        "200":
+          description: OK
+  #
+  # Site Groups
+  #
+  /api/v1/usergroups:
+    get:
+      tags:
+        - Site Groups
+      operationId: getAllSiteGroups
+      x-spring-paginated: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteGroupsPageResponse'
+    post:
+      tags:
+        - Site Groups
+      operationId: createSiteGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteGroupRequest'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteGroupResponse'
+  /api/v1/usergroups/{groupName}:
+    get:
+      tags:
+        - Site Groups
+      operationId: getSiteGroup
+      parameters:
+        - name: groupName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+        - Site Groups
+      operationId: updateSiteGroup
+      parameters:
+        - name: groupName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+        - Site Groups
+      operationId: deleteSiteGroup
+      parameters:
+        - name: groupName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /api/v1/userinfo/me:
+    get:
+      tags:
+        - Site Users
+      operationId: getSiteUserSelf
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteUserResponse'
+  #
+  # Site Users
+  #
+  /api/v1/users:
+    get:
+      tags:
+        - Site Users
+      operationId: listSiteUsers
+      description: Returns a pageable list of registered users for the site
+      x-spring-paginated: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteUsersPageResponse'
+    post:
+      tags:
+        - Site Users
+      operationId: createSiteUser
+      description: Create (register) a user for the site
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteUserRequest'
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteUserResponse'
+  /api/v1/users/{userId}:
+    get:
+      tags:
+        - Site Users
+      operationId: getSiteUser
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteUser'
+    put:
+      tags:
+        - Site Users
+      operationId: updateSiteUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SiteUserRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteUserResponse'
+    delete:
+      tags:
+        - Site Users
+      operationId: deleteSiteUser
+      responses:
+        "200":
+          description: OK
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/users/{userId}/groups:
+    get:
+      tags:
+        - Site Users
+      operationId: getAllSiteUserGroups
+      responses:
+        "200":
+          description: OK
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/users/{userId}/groups/{groupName}:
+    put:
+      tags:
+        - Site Users
+      operationId: addSiteUserGroup
+      parameters:
+        - name: groupName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+        - Site Users
+      operationId: removeSiteUserGroup
+      parameters:
+        - name: groupName
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+
+components:
+  schemas:
+    #
+    # Site Users
+    #
+    SiteUser:
+      type: object
+      properties:
+        userId:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        emailVerified:
+          type: boolean
+        photoUrl:
+          type: string
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/SiteGroup'
+        # Derived (read-only) fields
+        givenName:
+          type: string
+          readOnly: true
+        familyName:
+          type: string
+          readOnly: true
+        sortedName:
+          type: string
+          readOnly: true
+        initials:
+          type: string
+          readOnly: true
+      required:
+        - userId
+        - displayName
+        - email
+        - emailVerified
+        - photoUrl
+    SiteUsersPageResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PaginationResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/SiteUser'
+              default: []
+          required:
+            - content
+    #
+    # Site Groups
+    #
+    SiteGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/SiteUser'
+      required:
+        - id
+        - name
+        - description
+        - users
+    SiteGroupsPageResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PaginationResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/SiteGroup'
+              default: []
+    #
+    # Cycles
+    #
+    Cycle:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        alias:
+          type: string
+        cycleStart:
+          format: date
+          type: string
+          example: 2022-03-10
+        cycleEnd:
+          format: date
+          type: string
+          example: 2022-03-10
+        cyclePreStart:
+          format: date
+          type: string
+          example: 2022-03-10
+        cyclePostEnd:
+          format: date
+          type: string
+          example: 2022-03-10
+        cycleWeekStart:
+          type: integer
+        requirements:
+          $ref: '#/components/schemas/Requirements'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+        - id
+        - title
+        - alias
+        - cycleStart
+        - cycleEnd
+        - cyclePreStart
+        - cyclePostEnd
+        - cycleWeekStart
+        - requirements
+        - metadata
+    CyclesPageResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PaginationResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/Candidate'
+              default: []
+    #
+    # Candidates
+    #
+    Candidate:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/SiteUser'
+        cycle:
+          $ref: '#/components/schemas/Cycle'
+        status:
+          type: integer
+        hidden:
+          type: boolean
+        audit:
+          type: boolean
+        cycleCont:
+          type: integer
+        poom:
+          type: boolean
+        beltRank:
+          type: integer
+        letters:
+          type: integer
+        essays:
+          type: integer
+        examWritten:
+          format: double
+          type: number
+        preExamWritten:
+          format: double
+          type: number
+        physicalExam:
+          $ref: '#/components/schemas/PhysicalExam'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        # Derived fields (read-only)
+        fullName:
+          type: string
+          readOnly: true
+        givenName:
+          type: string
+          readOnly: true
+        familyName:
+          type: string
+          readOnly: true
+        sortedName:
+          type: string
+          readOnly: true
+      required:
+        - id
+        - user
+        - cycle
+        - status
+        - hidden
+        - audit
+        - cycleCont
+        - poom
+        - beltRank
+        - letters
+        - essays
+        - examWritten
+        - preExamWritten
+        - physicalExam
+        - metadata
+
+    CandidatesPageResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PaginationResponse'
+        - type: object
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/Candidate'
+              default: []
+
+    PhysicalExam:
+      type: object
+      properties:
+        preExamRun:
+          type: number
+          format: double
+        preExamPushUps:
+          type: integer
+        preExamSitUps:
+          type: integer
+        preExamBurpees:
+          type: integer
+        preExamPullUps:
+           type: integer
+        preExamPlanks:
+          type: integer
+        examRun:
+          type: number
+          format: double
+        examPushUps:
+          type: integer
+        examSitUps:
+          type: integer
+        examBurpees:
+          type: integer
+        examPullUps:
+          type: integer
+        examPlanks:
+          type: integer
+      required:
+        - preExamRun
+        - preExamPushUps
+        - preExamSitUps
+        - preExamBurpees
+        - preExamPullUps
+        - preExamPlanks
+        - examRun
+        - examPushUps
+        - examSitUps
+        - examBurpees
+        - examPullUps
+        - examPlanks
+    LogRecord:
+      type: object
+      properties:
+        timestamp:
+          format: date-time
+          type: string
+          example: 2022-03-10T16:15:50Z
+        level:
+          format: int32
+          type: integer
+        fileName:
+          type: string
+        lineNumber:
+          format: int32
+          type: integer
+        columnNumber:
+          format: int32
+          type: integer
+        message:
+          type: string
+        additional:
+          type: array
+          items:
+            type: string
+      required:
+        - timestamp
+        - level
+        - message
+        - additional
+
+    Requirements:
+      type: object
+      x-class-extra-annotation: "@jakarta.persistence.Embeddable"
+      properties:
+        miles:
+          format: double
+          type: number
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"MILES\", nullable = false)"
+        pushUps:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"PUSHUPS\", nullable = false)"
+        sitUps:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"SITUPS\", nullable = false)"
+        burpees:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"BURPEES\", nullable = false)"
+        kicks:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"KICKS\", nullable = false)"
+        poomsae:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"POOMSAE\", nullable = false)"
+        selfDefense:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"SELF_DEFENSE\", nullable = false)"
+        sparring:
+          format: double
+          type: number
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"SPARRING\", nullable = false)"
+        jumps:
+          format: double
+          type: number
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"JUMPS\", nullable = false)"
+        pullUps:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"PULLUPS\", nullable = false)"
+        planks:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"PLANKS\", nullable = false)"
+        rollsFalls:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"ROLLS_FALLS\", nullable = false)"
+        classSaturday:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"CLASS_SATURDAY\", nullable = false)"
+        classWeekday:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"CLASS_WEEKDAY\", nullable = false)"
+        classPMAA:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"CLASS_PMAA\", nullable = false)"
+        classSparring:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"CLASS_SPARRING\", nullable = false)"
+        classMasterQ:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"CLASS_MASTERQ\", nullable = false)"
+        classDreamTeam:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"CLASS_DREAMTEAM\", nullable = false)"
+        classHyperPro:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"CLASS_HYPERPRO\", nullable = false)"
+        meditation:
+          format: double
+          type: number
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"MEDITATION\", nullable = false)"
+        randomActs:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"RAOK\", nullable = false)"
+        mentor:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"MENTOR\", nullable = false)"
+        mentee:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"MENTEE\", nullable = false)"
+        leadership:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"LEADERSHIP\", nullable = false)"
+        leadership2:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"LEADERSHIP2\", nullable = false)"
+        journals:
+          type: integer
+          x-field-extra-annotation: "@jakarta.persistence.Column(name = \"JOURNALS\", nullable = false)"
+      required:
+        - miles
+        - pushUps
+        - sitUps
+        - burpees
+        - kicks
+        - poomsae
+        - selfDefense
+        - sparring
+        - jumps
+        - pullUps
+        - planks
+        - rollsFalls
+        - classSaturday
+        - classWeekday
+        - classPMAA
+        - classSparring
+        - classMasterQ
+        - classDreamTeam
+        - classHyperPro
+        - meditation
+        - randomActs
+        - mentor
+        - mentee
+        - leadership
+        - leadership2
+        - journals
+    #
+    # Statistics Schemas
+    #
+    Statistics:
+      type: object
+      properties:
+        candidateId:
+          type: integer
+        startDate:
+          format: date
+          type: string
+        endDate:
+          format: date
+          type: string
+        overall:
+          format: double
+          type: number
+        miles:
+          description: Count of miles run/walked by the candidate.
+          format: double
+          type: number
+        pushUps:
+          description: Count of push-ups performed by the candidate.
+          format: double
+          type: number
+        sitUps:
+          description: Count of sit-ups performed by the candidate.
+          format: double
+          type: number
+        burpees:
+          description: Count of burpees performed by the candidate.
+          format: double
+          type: number
+        kicks:
+          description: Count of kicks (front, side, back) performed by the candidate.
+          format: double
+          type: number
+        poomsae:
+          description: Count of poomsaes performed by the candidate.
+          format: double
+          type: number
+        selfDefense:
+          description: Count of self-defense performed by the candidate.
+          format: double
+          type: number
+        sparring:
+          description: Count of 90-second sparring rounds performed by the candidate.
+          format: double
+          type: number
+        jumps:
+          description: Count of 1-minute jump-rope sessions performed by the candidate.
+          format: double
+          type: number
+        pullUps:
+          description: Count of pull-ups performed by the candidate.
+          format: double
+          type: number
+        planks:
+          description: Count of 1-minute planks performed by the candidate.
+          format: double
+          type: number
+        rollsFalls:
+          description: Count of rolls and falls performed by the candidate.
+          format: double
+          type: number
+        classSaturday:
+          description: Count of Saturday Black Belt classes attended by the candidate.
+          format: double
+          type: number
+        classWeekday:
+          description: Count of weekday classes attended by the candidate.
+          format: double
+          type: number
+        classPMAA:
+          description: Count of Philippine Martial Arts Association (PMAA) classes attended by the candidate.
+          format: double
+          type: number
+        classSparring:
+          description: Count of Olympic Sparring classes attended by the candidate.
+          format: double
+          type: number
+        classMasterQ:
+          description: Count of MasterQuest classes attended by the candidate.
+          format: double
+          type: number
+        classDreamTeam:
+          description: Count of DreamTeam classes attended by the candidate.
+          format: double
+          type: number
+        classHyperPro:
+          description: Count of HyperPro classes attended by the candidate.
+          format: double
+          type: number
+        meditation:
+          description: Count of minutes of meditation spent by the candidate.
+          format: double
+          type: number
+        randomActs:
+          description: Count of Random Acts of Kindness (RAOK) performed by the candidate.
+          format: double
+          type: number
+        mentor:
+          description: Count of 30-minute sessions when the candidate mentors someone.
+          format: double
+          type: number
+        mentee:
+          description: Count of 30-minute sessions when the candidate is mentored by someone.
+          format: double
+          type: number
+        leadership:
+          format: double
+          type: number
+        leadership2:
+          format: double
+          type: number
+        journals:
+          format: double
+          type: number
+      required:
+        - candidateId
+        - startDate
+        - endDate
+        - overall
+        - miles
+        - pushUps
+        - sitUps
+        - burpees
+        - kicks
+        - poomsae
+        - selfDefense
+        - sparring
+        - jumps
+        - pullUps
+        - planks
+        - rollsFalls
+        - classSaturday
+        - classWeekday
+        - classPMAA
+        - classSparring
+        - classMasterQ
+        - classDreamTeam
+        - classHyperPro
+        - meditation
+        - randomActs
+        - mentor
+        - mentee
+        - leadership
+        - leadership2
+        - journals
+
+    FullStatistics:
+      type: object
+      properties:
+        candidateId:
+          type: integer
+        cycleId:
+          type: integer
+        cycle:
+          $ref: '#/components/schemas/Statistics'
+        weekly:
+          type: array
+          items:
+            $ref: '#/components/schemas/Statistics'
+          default: []
+      required:
+        - candidateId
+        - cycleId
+        - cycle
+        - weekly
+    FullStatisticsCandidatesResponse:
+      type: object
+      properties:
+        candidates:
+          type: array
+          items:
+            $ref: '#/components/schemas/FullStatistics'
+          default: []
+      required:
+        - candidates
+
+    SiteUserRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        emailVerified:
+          type: boolean
+        photoUrl:
+          type: string
+      required:
+        - userId
+        - displayName
+        - email
+        - emailVerified
+        - photoUrl
+    SiteUserResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        emailVerified:
+          type: boolean
+        photoUrl:
+          type: string
+      required:
+        - userId
+        - displayName
+        - email
+        - emailVerified
+        - photoUrl
+    SiteGroupRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+      required:
+        - id
+        - name
+        - description
+    SiteGroupResponse:
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+    TrackingRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        trackingDate:
+          format: date
+          type: string
+          example: 2022-03-10
+        candidateId:
+          type: integer
+        cycleId:
+          type: integer
+        requirements:
+          $ref: '#/components/schemas/Requirements'
+
+    Tracking:
+      type: object
+      properties:
+        trackingDate:
+          format: date
+          type: string
+        candidateId:
+          type: integer
+        requirements:
+          $ref: '#/components/schemas/Requirements'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+        - trackingDate
+        - candidateId
+        - requirements
+        - metadata
+    #
+    # User Account (Firebase) Schemas
+    #
+    SignInAnonymousRequest:
+      type: object
+      properties:
+        returnSecureToken:
+          type: boolean
+      required:
+        - returnSecureToken
+    SignInPasswordRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        returnSecureToken:
+          type: boolean
+      required:
+        - email
+        - password
+        - returnSecureToken
+    SignInResponse:
+      type: object
+      properties:
+        idToken:
+          description: A Firebase Auth ID token for the authenticated user.
+          type: string
+        refreshToken:
+          description: A Firebase Auth refresh token for the authenticated user.
+          type: string
+        expiresIn:
+          description: The number of seconds in which the ID token expires.
+          type: string
+        email:
+          description: The email of the authenticated user.
+          type: string
+        localId:
+          description: The uid of the authenticated user.
+          type: string
+        registered:
+          description: Whether the email is for an existing account.
+          type: boolean
+      required:
+        - idToken
+        - refreshToken
+        - expiresIn
+        - email
+        - localId
+        - registered
+    UserDetailsRequest:
+      type: object
+      properties:
+        idToken:
+          description: The Firebase ID token of the account.
+          type: string
+      required:
+        - idToken
+    UserDetailsResponse:
+      type: object
+      properties:
+        kind:
+          type: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDetails'
+      required:
+        - kind
+        - users
+    UserDetails:
+      type: object
+      properties:
+        localId:
+          description: The uid of this user.
+          type: string
+        disabled:
+          description: Whether or not the user's account is disabled.
+          type: boolean
+        email:
+          description: The email of the user.
+          type: string
+        emailVerified:
+          description: Whether or not the user's email has been verified.
+          type: boolean
+        displayName:
+          description: The display name for the user.
+          type: string
+        photoUrl:
+          description: The photo Url for this user.
+          type: string
+        providerUserInfo:
+          description: List of ProviderUserInfo objects that represents the identities from different identity providers that are linked to this user.
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderUserInfo'
+        passwordHash:
+          description: Hash version of password.
+          type: string
+        passwordUpdatedAt:
+          description: The timestamp, in milliseconds, that the account password was last changed.
+          format: double
+          type: number
+        validSince:
+          description: The timestamp, in seconds, which marks a boundary, before which Firebase ID token are considered revoked.
+          type: string
+        lastLoginAt:
+          description: The timestamp, in milliseconds, that the account last logged in at.
+          type: string
+        createdAt:
+          description: The timestamp, in milliseconds, that the account was created at.
+          type: string
+        customAttributes:
+          type: string
+        lastRefreshAt:
+          format: date-time
+          type: string
+      required:
+        - localId
+        - disabled
+        - email
+        - emailVerified
+        - displayName
+        - photoUrl
+        - providerUserInfo
+        - passwordHash
+        - passwordUpdatedAt
+        - validSince
+        - lastLoginAt
+        - createdAt
+        - customAttributes
+        - lastRefreshAt
+    UserRecordResponse:
+      type: object
+      properties:
+        uid:
+          description: The uid of the user.
+          type: string
+        providerId:
+          description: The provider ID of this user.
+          type: string
+        tenantId:
+          description: The tenant ID associated with this user, if one exists.
+          type: string
+        disabled:
+          description: Whether or not the user's account is disabled.
+          type: boolean
+        email:
+          description: The email of the user.
+          type: string
+        emailVerified:
+          description: Whether or not the user's email has been verified.
+          type: boolean
+        displayName:
+          description: The display name for the user.
+          type: string
+        photoUrl:
+          description: The photo Url for this user.
+          type: string
+        phoneNumber:
+          description: The phone number for this user.
+          type: string
+        tokensValidAfterTimestamp:
+          description:  Timestamp in milliseconds since epoch, truncated down to the closest second.
+          format: int64
+          type: integer
+        providerUserInfo:
+          description: List of ProviderUserInfo objects that represents the identities from different identity providers that are linked to this user.
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderUserInfo'
+        userMetadata:
+          $ref: '#/components/schemas/UserRecordMetadata'
+        customClaims:
+          type: string
+          additionalProperties: true
+      required:
+        - uid
+        - providerId
+        - tenantId
+        - disabled
+        - email
+        - emailVerified
+        - displayName
+        - photoUrl
+        - phoneNumber
+        - tokensValidAfterTimestamp
+        - providerUserInfo
+        - userMetadata
+    ProviderUserInfo:
+      type: object
+      properties:
+        providerId:
+          type: string
+        displayName:
+          type: string
+        photoUrl:
+          type: string
+        email:
+          type: string
+        rawId:
+          type: string
+        screenName:
+          type: string
+      required:
+        - providerId
+        - displayName
+        - photoUrl
+        - email
+        - rawId
+        - screenName
+    UserRecordMetadata:
+      type: object
+      properties:
+        creationTimestamp:
+          format: int64
+          type: integer
+        lastRefreshTimestamp:
+          format: int64
+          type: integer
+        lastSigninTimestamp:
+          format: int64
+          type: integer
+      required:
+        - creationTimestamp
+        - lastRefreshTimestamp
+        - lastSigninTimestamp
+    ChangeEmailRequest:
+      description: A request to update the user profile (displayName, photoUrl) for the account.
+      type: object
+      properties:
+        idToken:
+          description: A Firebase Auth ID token for the user.
+          type: string
+        email:
+          description: User's new email.
+          type: string
+        returnSecureToken:
+          description: Whether or not to return an ID and refresh token.
+          type: boolean
+      required:
+        - idToken
+        - email
+        - returnSecureToken
+    ChangePasswordRequest:
+      description: A request to the password for the account.
+      type: object
+      properties:
+        idToken:
+          description: A Firebase Auth ID token for the user.
+          type: string
+        password:
+          description: User's new password.
+          type: string
+        returnSecureToken:
+          description: Whether or not to return an ID and refresh token.
+          type: boolean
+      required:
+        - idToken
+        - password
+        - returnSecureToken
+    UpdateProfileRequest:
+      description: A request to update the user profile (displayName, photoUrl) for the account.
+      type: object
+      properties:
+        idToken:
+          description: A Firebase Auth ID token for the user.
+          type: string
+        displayName:
+          description: User's new display name.
+          type: string
+        photoUrl:
+          description: User's new photo url.
+          type: string
+        deleteAttribute:
+          description: List of attributes to delete, "DISPLAY_NAME" or "PHOTO_URL". This will nullify these values.
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAttributeName'
+        returnSecureToken:
+          description: Whether or not to return an ID and refresh token.
+          type: boolean
+      required:
+        - idToken
+        - displayName
+        - photoUrl
+        - deleteAttribute
+        - returnSecureToken
+    SetAccountInfoRequest:
+      type: object
+      properties:
+        idToken:
+          description: A Fireabase Auth ID token for the user
+          type: string
+        displayName:
+          description: User's new display name
+          type: string
+        photoUrl:
+          description: User's new photo url.
+          type: string
+        deleteAttribute:
+          description: List of attributes to delete, "DISPLAY_NAME" or "PHOTO_URL". This will nullify these values.
+          type: array
+          items:
+            $ref: '#/components/schemas/UserAttributeName'
+        returnSecureToken:
+          description: Whether or not to return an ID and refresh token.
+          type: boolean
+        customAttributes:
+          type: string
+      required:
+        - idToken
+        - displayName
+        - photoUrl
+        - deleteAttribute
+        - returnSecureToken
+        - customAttributes
+    UserAttributeName:
+      enum:
+        - USER_ATTRIBUTE_NAME_UNSPECIFIED
+        - EMAIL
+        - DISPLAY_NAME
+        - PROVIDER
+        - PHOTO_URL
+        - PASSWORD
+        - RAW_USER_INFO
+      type: string
+
+    #
+    # JPA @Embeddable Metadata
+    #
+    Metadata:
+      type: object
+      properties:
+        created:
+          format: date-time
+          type: string
+          example: 2022-03-10T16:15:50Z
+        createdBy:
+          type: string
+        modified:
+          format: date-time
+          type: string
+          example: 2022-03-10T16:15:50Z
+        modifiedBy:
+          type: string
+      required:
+        - created
+        - createdBy
+        - modified
+        - modifiedBy
+
+
+    #
+    # Spring Pagination Support
+    #
+    PaginationResponse:
+      type: object
+      properties:
+        totalElements:
+          type: integer
+          format: int64
+          default: 0
+        totalPages:
+          type: integer
+          default: 0
+        sort:
+          $ref: '#/components/schemas/Sort'
+        first:
+          type: boolean
+        last:
+          type: boolean
+        number:
+          type: integer
+        pageable:
+          $ref: '#/components/schemas/Pageable'
+        numberOfElements:
+          type: integer
+        size:
+          type: integer
+        empty:
+          type: boolean
+        content:
+          type: array
+          items: {}
+    Sort:
+      type: object
+      format: sort
+      properties:
+        sorted:
+          type: boolean
+        unsorted:
+          type: boolean
+        empty:
+          type: boolean
+    Pageable:
+      type: object
+      format: pageable
+      properties:
+        page:
+          type: integer
+          minimum: 0
+        size:
+          type: integer
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+
+  #
+  # Global Parameters
+  #
+  parameters:
+    candidateId:
+      name: candidateId
+      description: The unique identifier (number) assigned to a testing cycle candidate
+      in: path
+      required: true
+      schema:
+        type: integer
+    cycleId:
+      name: cycleId
+      description: The unique identifier (number) assigned to a testing cycle
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  securitySchemes:
+    firebase:
+      type: oauth2
+      name: firebase
+      description: Google Firebase OAuth 2.0 implicit authentication
+      scheme: bearer
+      in: header
+      flows:
+        implicit:
+          authorizationUrl: 'https://accounts.google.com/o/oauth2/auth'
+          x-google-issuer: 'https://securetoken.google.com/ktbtracker-1659484356633'
+          x-google-jwks_uri: 'https://googleapis.com/service.accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com'
+          x-google-audiences: 'ktbtracker-1659484356633'
+          scopes:
+            openid: Associate you with your personal info on Google
+            "https://www.googleapis.com/auth/userinfo.email": See your primary Google Account email address
+            "https://www.googleapis.com/auth/userinfo.profile": See your personal info, including any personal info you've made publicly available
+

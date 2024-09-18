@@ -1,4 +1,4 @@
-package com.bayfourteen.kingtiger.ktbkracker.apiserver;
+package com.bayfourteen.kingtiger.ktbtracker.apiserver;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;

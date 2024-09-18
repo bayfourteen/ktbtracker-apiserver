@@ -4,6 +4,8 @@ plugins {
 	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.6'
 	id 'org.asciidoctor.jvm.convert' version '3.3.2'
+	id("org.openapi.generator") version "7.8.0"
+	id("io.openliberty.tools.gradle.Liberty") version "3.8.3"
 }
 
 group = 'com.bayfourteen.kingtiger'
@@ -31,11 +33,26 @@ ext {
 }
 
 dependencies {
+	implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.8.0'
+	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+	implementation 'io.swagger.core.v3:swagger-annotations:2.2.22'
+	// Google Firebase SDK
+	implementation("com.google.firebase:firebase-admin:9.3.0") {
+		//exclude group: "com.google.cloud", module: "google-cloud-firestore"
+		//exclude group: "com.google.cloud", module: "google-cloud-storage"
+		exclude group: "io.netty", module: "netty-codec-http"
+		exclude group: "io.netty", module: "netty-handler"
+		exclude group: "io.netty", module: "netty-transport"
+	}
+	// Model Mapper
+	implementation("org.modelmapper:modelmapper:3.2.0")
+
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -72,3 +89,47 @@ tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
 }
+
+openApiGenerate {
+	generatorName.set("spring")
+	inputSpec.set("${rootDir}/src/main/resources/openapi.yaml")
+	outputDir.set("${buildDir}/generated/sources/openapitools")
+	apiPackage.set("com.bayfourteen.kingtiger.ktbtracker.openapitools.api")
+	modelPackage.set("com.bayfourteen.kingtiger.ktbtracker.openapitools.model")
+	typeMappings.set([
+			"object+pageable": "Pageable",
+			"object+sort": "Sort"
+	])
+	importMappings.set([
+			"Instant": "java.time.Instant",
+			"LocalDate": "java.time.LocalDate",
+			"LocalTime": "java.time.LocalTime",
+			"Pageable": "org.springframework.data.domain.Pageable",
+			"ParameterObject": "org.springdoc.api.annotations.ParameterObject",
+			"Sort": "org.springframework.data.domain.Sort",
+	])
+	configOptions = [
+			useSpringBoot3: "true",
+			interfaceOnly: "true",
+			useSwaggerUI: "true",
+			useOptional: "true",
+			useTags: "true",
+			oas3: "true",
+			hateoas: "true",
+			booleanGetterPrefix: "is",
+			dateLibrary: "java8-localdatetime",
+			unhandledException: "true",
+			generateConstructorWithAllArgs: "true",
+			generateConstructorWithRequiredArgs: "true",
+	]
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir("${buildDir}/generated/sources/openapitools/src/main/java")
+		}
+	}
+}
+
+compileJava.dependsOn tasks.openApiGenerate
